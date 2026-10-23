@@ -1,0 +1,32 @@
+name: Gracie checks
+on:
+  push:
+    paths: ['GracieAi-*.zip', 'GracieAi-*.sha256', '.github/workflows/checks.yml']
+  pull_request:
+    paths: ['GracieAi-*.zip', 'GracieAi-*.sha256', '.github/workflows/checks.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test-and-build:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify and extract downloadable source
+        shell: pwsh
+        run: |
+          $zip = 'GracieAi-2026-10-23.zip'
+          $expected = ((Get-Content 'GracieAi-2026-10-23.sha256' -Raw).Trim() -split '\s+')[0]
+          $actual = (Get-FileHash -LiteralPath $zip -Algorithm SHA256).Hash
+          if ($actual -ne $expected) { throw 'Download checksum mismatch' }
+          Expand-Archive -LiteralPath $zip -DestinationPath "$env:RUNNER_TEMP/gracie"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci --no-audit --no-fund
+        working-directory: ${{ runner.temp }}/gracie/GracieAi
+      - run: npm test
+        working-directory: ${{ runner.temp }}/gracie/GracieAi
+      - run: npm run build
+        working-directory: ${{ runner.temp }}/gracie/GracieAi
