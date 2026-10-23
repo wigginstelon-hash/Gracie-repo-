@@ -290,6 +290,32 @@ index 45abec2..31f49d6 100644
    }});
    const result=await resumed.chat({model:'local',message:'Inspect',fastMode:true,useLocalTools:true,resumeState:{...checkpoint,partial}});
    assert.equal(result.content,'First sentence.\nNext sentence.');assert.equal(calls,1);assert.equal(result.toolActivity.length,1);
+diff --git a/GracieAi/electron/project-agent.test.cjs b/GracieAi/electron/project-agent.test.cjs
+index 04587cd..6747d59 100644
+--- a/GracieAi/electron/project-agent.test.cjs
++++ b/GracieAi/electron/project-agent.test.cjs
+@@ -3,7 +3,7 @@ const {createProjectAgent}=require('./project-agent.cjs');
+ const {createLocalTools}=require('./local-tools.cjs');
+ const action=(type,extras={})=>({action:type,path:'',query:'',offset:0,content:'',expectedHash:null,script:'none',summary:'Observed task results',...extras});
+ async function fixture(t){
+- const root=await fs.mkdtemp(path.join(os.tmpdir(),'gracie-agent-'));t.after(()=>fs.rm(root,{recursive:true,force:true}));
++ const root=await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(),'gracie-agent-')));t.after(()=>fs.rm(root,{recursive:true,force:true}));
+  await fs.writeFile(path.join(root,'package.json'),JSON.stringify({scripts:{test:'node --test verify.cjs'}}));
+  await fs.writeFile(path.join(root,'sum.cjs'),'module.exports=(a,b)=>a-b;');
+  await fs.writeFile(path.join(root,'verify.cjs'),"const test=require('node:test'),assert=require('node:assert/strict');test('adds positive and negative values',()=>{const sum=require('./sum.cjs');assert.equal(sum(2,3),5);assert.equal(sum(-2,3),1);});");
+diff --git a/GracieAi/electron/project-checks.test.cjs b/GracieAi/electron/project-checks.test.cjs
+index eab646e..bcfd046 100644
+--- a/GracieAi/electron/project-checks.test.cjs
++++ b/GracieAi/electron/project-checks.test.cjs
+@@ -2,7 +2,7 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
+ const {createProjectChecks}=require('./project-checks.cjs');
+ const {createLocalTools}=require('./local-tools.cjs');
+ async function fixture(t,scripts={test:'node check.cjs'}){
+- const root=await fs.mkdtemp(path.join(os.tmpdir(),'gracie-checks-'));
++ const root=await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(),'gracie-checks-')));
+  t.after(()=>fs.rm(root,{recursive:true,force:true}));
+  await fs.writeFile(path.join(root,'package.json'),JSON.stringify({scripts}));
+  await fs.writeFile(path.join(root,'check.cjs'),'console.log("real output");process.exit(7);');
 diff --git a/GracieAi/scripts/package.cjs b/GracieAi/scripts/package.cjs
 new file mode 100644
 index 0000000..defe4db
