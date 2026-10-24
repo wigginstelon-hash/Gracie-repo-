@@ -25,3 +25,7 @@ From the extracted GracieAi folder: `npm ci`, `npm test`, `npm run build`. `npm 
 Added a dedicated local assistant setup/launcher, offline controls and diagnostics. Fixed output/context budgeting, early cancellation, large-model draft settings, file-content versus concurrency-hash instructions, truthful tool execution warnings and sanitized vision-projector errors. Included previously omitted project-agent tests and reproducible packaging.
 
 See [the complete readable source patch](GracieAi-fixes.patch) and the README inside the ZIP. SHA-256 is in `GracieAi-2026-10-23.sha256`. Existing user data and installed models are not included or overwritten by this download.
+
+The dependency audit initially reported 10 vulnerable package entries. Compatible updates plus Electron 42.11.18 and Mermaid 12.2.0 reduce npm audit findings to zero. The updated diagram renderer is checked in a real sandboxed Electron renderer before delivery. Audit results are a point-in-time advisory check, not proof of complete security.
+
+Ollama was updated from 0.40.8 to the signed official 0.40.10 installer. Llama Vision still reports an unsupported architecture; Gemma still fails to load its vision projector. These installed artifacts remain unsupported on the tested runtime. Gracie's local profile passed again after the update.
