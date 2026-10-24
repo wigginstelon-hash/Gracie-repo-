@@ -16,7 +16,7 @@ From the extracted GracieAi folder: `npm ci`, `npm test`, `npm run build`. `npm 
 
 - `gracie-assistant:latest`, standard Qwen 3.5 4B/9B and the two smaller abliterated Qwens passed their targeted checks. Small models remain fallible.
 - Installed `huihui_ai/qwen3.5-abliterated:4B` (about 3.3 GB) and `huihui_ai/qwen3-abliterated:4b` (about 2.5 GB). These fit this system better than the 27B model. Publisher sources: [Qwen 3.5](https://ollama.com/huihui_ai/qwen3.5-abliterated:4B), [Qwen 3](https://ollama.com/huihui_ai/qwen3-abliterated:4b).
-- Qwen 3.8 abliterated answered correctly through Gracie in about 65 seconds. Disabling speculative draft generation for large local models resolved this tested request. It is slow on this hardware and is not the default.
+- Qwen 3.8 abliterated answered correctly through Gracie in about 65 seconds on Ollama 0.40.8 and 325 seconds in the final 0.40.10 retry. Disabling speculative draft generation for large local models resolved this tested request. It is slow on this hardware and is not the default.
 - Qwen 2.5 Coder 7B failed a structured arithmetic check and emitted tool-shaped text without a real tool call. Gracie now warns that no tool ran. Do not rely on this model for automatic actions.
 - Llama 3.2 Vision and Gemma 4 26B had runtime/model loading failures. Application fixes cannot guarantee compatibility of installed model artifacts.
 
@@ -29,3 +29,4 @@ See [the complete readable source patch](GracieAi-fixes.patch) and the README in
 The dependency audit initially reported 10 vulnerable package entries. Compatible updates plus Electron 42.11.18 and Mermaid 12.2.0 reduce npm audit findings to zero. The updated diagram renderer is checked in a real sandboxed Electron renderer before delivery. Audit results are a point-in-time advisory check, not proof of complete security.
 
 Ollama was updated from 0.40.8 to the signed official 0.40.10 installer. Llama Vision still reports an unsupported architecture; Gemma still fails to load its vision projector. These installed artifacts remain unsupported on the tested runtime. Gracie's local profile passed again after the update.
+
